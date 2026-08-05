@@ -1540,9 +1540,9 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
 
   // Global Cross-Platform Keyboard Shortcuts Engine (Fedora / Linux / macOS / Windows / Web)
   window.addEventListener('keydown', (e) => {
-    // Ignore hotkeys when user is actively typing in an input field or inline editor
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
-      if (e.key === 'Escape') {
+    // Ignore hotkeys when user is actively typing in an input field, textarea, or inline editor
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable)) {
+      if (e.key === 'Escape' || e.code === 'Escape') {
         const textWrapper = document.querySelector('.inline-text-wrapper');
         if (textWrapper) textWrapper.remove();
       }
@@ -1550,35 +1550,40 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
     }
 
     const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+    const key = (e.key || '').toLowerCase();
+    const code = e.code || '';
 
-    if (isCmdOrCtrl && e.key.toLowerCase() === 'o') {
+    if (isCmdOrCtrl && (key === 'o' || code === 'KeyO')) {
       e.preventDefault();
+      e.stopPropagation();
       elements.fileInput.value = '';
       elements.fileInput.click();
-    } else if (isCmdOrCtrl && e.key.toLowerCase() === 's') {
+    } else if (isCmdOrCtrl && (key === 's' || code === 'KeyS')) {
       e.preventDefault();
+      e.stopPropagation();
       savePdfDocument();
-    } else if (isCmdOrCtrl && e.key.toLowerCase() === 'p') {
+    } else if (isCmdOrCtrl && (key === 'p' || code === 'KeyP')) {
       e.preventDefault();
+      e.stopPropagation();
       window.print();
-    } else if (isCmdOrCtrl && (e.key === '=' || e.key === '+')) {
+    } else if (isCmdOrCtrl && (key === '=' || key === '+' || code === 'Equal' || code === 'NumpadAdd')) {
       e.preventDefault();
       state.scale += 0.15;
       elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
       renderAllPages();
-    } else if (isCmdOrCtrl && e.key === '-') {
+    } else if (isCmdOrCtrl && (key === '-' || code === 'Minus' || code === 'NumpadSubtract')) {
       e.preventDefault();
       if (state.scale > 0.3) {
         state.scale -= 0.15;
         elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
         renderAllPages();
       }
-    } else if (isCmdOrCtrl && e.key === '0') {
+    } else if (isCmdOrCtrl && (key === '0' || code === 'Digit0' || code === 'Numpad0')) {
       e.preventDefault();
       state.scale = 1.0;
       elements.zoomLevel.textContent = `100%`;
       renderAllPages();
-    } else if (isCmdOrCtrl && e.key.toLowerCase() === 'z') {
+    } else if (isCmdOrCtrl && (key === 'z' || code === 'KeyZ')) {
       e.preventDefault();
       const currAnnots = state.annotations[state.currentPage];
       if (currAnnots && currAnnots.length > 0) {
@@ -1586,30 +1591,30 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
         renderAllPages();
         updateAnnotationsList();
       }
-    } else if (e.key.toLowerCase() === 'h') {
+    } else if (key === 'h' || code === 'KeyH') {
       setActiveTool('hand');
-    } else if (e.key.toLowerCase() === 'v') {
+    } else if (key === 'v' || code === 'KeyV') {
       setActiveTool('select');
-    } else if (e.key.toLowerCase() === 'p') {
+    } else if (key === 'p' || code === 'KeyP') {
       setActiveTool('draw');
-    } else if (e.key.toLowerCase() === 't') {
+    } else if (key === 't' || code === 'KeyT') {
       setActiveTool('text');
-    } else if (e.key.toLowerCase() === 's') {
+    } else if (key === 's' || code === 'KeyS') {
       setActiveTool('stamp');
-    } else if (e.key.toLowerCase() === 'm') {
+    } else if (key === 'm' || code === 'KeyM') {
       elements.modalMerge.classList.remove('hidden');
-    } else if (e.key.toLowerCase() === 'w') {
+    } else if (key === 'w' || code === 'KeyW') {
       elements.modalWatermark.classList.remove('hidden');
-    } else if (e.key === '?' || e.key === '/') {
+    } else if (key === '?' || key === '/' || code === 'Slash') {
       if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
-    } else if (e.key === 'Escape') {
+    } else if (key === 'escape' || code === 'Escape') {
       elements.modalPageMgr.classList.add('hidden');
       elements.modalWatermark.classList.add('hidden');
       elements.modalMerge.classList.add('hidden');
       if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
       const textWrapper = document.querySelector('.inline-text-wrapper');
       if (textWrapper) textWrapper.remove();
-    } else if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedAnnot) {
+    } else if ((key === 'delete' || key === 'backspace' || code === 'Delete' || code === 'Backspace') && state.selectedAnnot) {
       Object.keys(state.annotations).forEach((p) => {
         state.annotations[p] = state.annotations[p].filter((a) => a !== state.selectedAnnot);
       });
@@ -1617,7 +1622,7 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
       renderAllPages();
       updateAnnotationsList();
     }
-  });
+  }, true);
 }
 
 // Start application when DOM ready
