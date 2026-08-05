@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig({
-  base: './', // Ensures CSS, JS, and worker assets load properly in Electron and relative file environments
+export default defineConfig(({ command }) => ({
+  base: command === 'serve' ? '/' : './',
   plugins: [
     tailwindcss(),
   ],
@@ -10,4 +10,4 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
-});
+}));
