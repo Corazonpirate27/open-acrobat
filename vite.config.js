@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig(({ command }) => ({
-  base: command === 'serve' ? '/' : './',
+export default defineConfig({
+  base: process.env.ELECTRON_BUILD === 'true' ? './' : '/',
   plugins: [
     tailwindcss(),
   ],
@@ -10,4 +10,4 @@ export default defineConfig(({ command }) => ({
     port: 5173,
     host: true,
   },
-}));
+});
