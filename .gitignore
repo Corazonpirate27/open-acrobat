@@ -6,6 +6,7 @@ web_modules/
 # Production build outputs
 dist/
 dist-ssr/
+dist-desktop/
 build/
 out/
 release/

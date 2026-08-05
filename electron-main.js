@@ -1,24 +1,34 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
+import { app, BrowserWindow } from 'electron';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
-    height: 800,
-    title: 'Adobe Acrobat Clone - Linux Edition',
-    icon: path.join(__dirname, 'public/icon.png'),
+    height: 850,
+    title: 'Open Acrobat - Linux Edition',
+    icon: path.join(__dirname, 'public/favicon.svg'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      sandbox: true,
     },
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
+    backgroundColor: '#121216',
   });
 
-  // Load production build or dev server
-  const devUrl = 'http://localhost:5173';
-  win.loadURL(devUrl).catch(() => {
+  const isDev = process.env.NODE_ENV === 'development';
+
+  if (isDev) {
+    win.loadURL('http://localhost:5173').catch(() => {
+      win.loadFile(path.join(__dirname, 'dist/index.html'));
+    });
+  } else {
     win.loadFile(path.join(__dirname, 'dist/index.html'));
-  });
+  }
 }
 
 app.whenReady().then(() => {
