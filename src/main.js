@@ -110,6 +110,9 @@ const elements = {
   btnRunMerge: document.getElementById('btn-run-merge'),
 
   modalShortcuts: document.getElementById('modal-shortcuts'),
+  modalSponsor: document.getElementById('modal-sponsor'),
+  btnHeaderSponsor: document.getElementById('btn-header-sponsor'),
+  menuSponsor: document.getElementById('menu-sponsor'),
 
   // Dropzone buttons
   dropOpenBtn: document.getElementById('drop-open-btn'),
@@ -1524,6 +1527,7 @@ function setupEventListeners() {
       elements.modalWatermark.classList.add('hidden');
       elements.modalMerge.classList.add('hidden');
       if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
+      if (elements.modalSponsor) elements.modalSponsor.classList.add('hidden');
     });
   });
 
@@ -1532,11 +1536,87 @@ function setupEventListeners() {
     if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
   });
 
+  // Sponsor / Donate Modal Toggle
+  if (elements.btnHeaderSponsor) {
+    elements.btnHeaderSponsor.addEventListener('click', () => {
+      if (elements.modalSponsor) elements.modalSponsor.classList.remove('hidden');
+    });
+  }
+
+  if (elements.menuSponsor) {
+    elements.menuSponsor.addEventListener('click', () => {
+      if (elements.modalSponsor) elements.modalSponsor.classList.remove('hidden');
+    });
+  }
+
   elements.menuAbout.addEventListener('click', () => {
     alert(`Open Acrobat - Linux & Cross-Platform Edition
 Version 1.0.0 (Fedora / iPad / Mobile Ready)
 Built with WebAssembly, PDF.js, and PDF-Lib.`);
   });
+
+  // Global Shortcut Execution Dispatcher (Invoked by Electron native listener & Web keydown)
+  window.triggerAcrobatShortcut = (action) => {
+    if (action === 'open') {
+      elements.fileInput.value = '';
+      elements.fileInput.click();
+    } else if (action === 'save') {
+      savePdfDocument();
+    } else if (action === 'print') {
+      window.print();
+    } else if (action === 'zoom-in') {
+      state.scale += 0.15;
+      elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+      renderAllPages();
+    } else if (action === 'zoom-out') {
+      if (state.scale > 0.3) {
+        state.scale -= 0.15;
+        elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+        renderAllPages();
+      }
+    } else if (action === 'zoom-reset') {
+      state.scale = 1.0;
+      elements.zoomLevel.textContent = '100%';
+      renderAllPages();
+    } else if (action === 'undo') {
+      const currAnnots = state.annotations[state.currentPage];
+      if (currAnnots && currAnnots.length > 0) {
+        currAnnots.pop();
+        renderAllPages();
+        updateAnnotationsList();
+      }
+    } else if (action === 'hand') {
+      setActiveTool('hand');
+    } else if (action === 'select') {
+      setActiveTool('select');
+    } else if (action === 'text') {
+      setActiveTool('text');
+    } else if (action === 'draw') {
+      setActiveTool('draw');
+    } else if (action === 'stamp') {
+      setActiveTool('stamp');
+    } else if (action === 'merge') {
+      elements.modalMerge.classList.remove('hidden');
+    } else if (action === 'watermark') {
+      elements.modalWatermark.classList.remove('hidden');
+    } else if (action === 'shortcuts') {
+      if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
+    } else if (action === 'escape') {
+      elements.modalPageMgr.classList.add('hidden');
+      elements.modalWatermark.classList.add('hidden');
+      elements.modalMerge.classList.add('hidden');
+      if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
+      const textWrapper = document.querySelector('.inline-text-wrapper');
+      if (textWrapper) textWrapper.remove();
+    } else if (action === 'delete' && state.selectedAnnot) {
+      Object.keys(state.annotations).forEach((p) => {
+        state.annotations[p] = state.annotations[p].filter((a) => a !== state.selectedAnnot);
+      });
+      state.selectedAnnot = null;
+      renderAllPages();
+      updateAnnotationsList();
+    }
+  };
 
   // Global Cross-Platform Keyboard Shortcuts Engine (Fedora / Linux / macOS / Windows / Web)
   window.addEventListener('keydown', (e) => {
@@ -1556,71 +1636,47 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
     if (isCmdOrCtrl && (key === 'o' || code === 'KeyO')) {
       e.preventDefault();
       e.stopPropagation();
-      elements.fileInput.value = '';
-      elements.fileInput.click();
+      window.triggerAcrobatShortcut('open');
     } else if (isCmdOrCtrl && (key === 's' || code === 'KeyS')) {
       e.preventDefault();
       e.stopPropagation();
-      savePdfDocument();
+      window.triggerAcrobatShortcut('save');
     } else if (isCmdOrCtrl && (key === 'p' || code === 'KeyP')) {
       e.preventDefault();
       e.stopPropagation();
-      window.print();
+      window.triggerAcrobatShortcut('print');
     } else if (isCmdOrCtrl && (key === '=' || key === '+' || code === 'Equal' || code === 'NumpadAdd')) {
       e.preventDefault();
-      state.scale += 0.15;
-      elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
-      renderAllPages();
+      window.triggerAcrobatShortcut('zoom-in');
     } else if (isCmdOrCtrl && (key === '-' || code === 'Minus' || code === 'NumpadSubtract')) {
       e.preventDefault();
-      if (state.scale > 0.3) {
-        state.scale -= 0.15;
-        elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
-        renderAllPages();
-      }
+      window.triggerAcrobatShortcut('zoom-out');
     } else if (isCmdOrCtrl && (key === '0' || code === 'Digit0' || code === 'Numpad0')) {
       e.preventDefault();
-      state.scale = 1.0;
-      elements.zoomLevel.textContent = `100%`;
-      renderAllPages();
+      window.triggerAcrobatShortcut('zoom-reset');
     } else if (isCmdOrCtrl && (key === 'z' || code === 'KeyZ')) {
       e.preventDefault();
-      const currAnnots = state.annotations[state.currentPage];
-      if (currAnnots && currAnnots.length > 0) {
-        currAnnots.pop();
-        renderAllPages();
-        updateAnnotationsList();
-      }
+      window.triggerAcrobatShortcut('undo');
     } else if (key === 'h' || code === 'KeyH') {
-      setActiveTool('hand');
+      window.triggerAcrobatShortcut('hand');
     } else if (key === 'v' || code === 'KeyV') {
-      setActiveTool('select');
+      window.triggerAcrobatShortcut('select');
     } else if (key === 'p' || code === 'KeyP') {
-      setActiveTool('draw');
+      window.triggerAcrobatShortcut('draw');
     } else if (key === 't' || code === 'KeyT') {
-      setActiveTool('text');
+      window.triggerAcrobatShortcut('text');
     } else if (key === 's' || code === 'KeyS') {
-      setActiveTool('stamp');
+      window.triggerAcrobatShortcut('stamp');
     } else if (key === 'm' || code === 'KeyM') {
-      elements.modalMerge.classList.remove('hidden');
+      window.triggerAcrobatShortcut('merge');
     } else if (key === 'w' || code === 'KeyW') {
-      elements.modalWatermark.classList.remove('hidden');
+      window.triggerAcrobatShortcut('watermark');
     } else if (key === '?' || key === '/' || code === 'Slash') {
-      if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
+      window.triggerAcrobatShortcut('shortcuts');
     } else if (key === 'escape' || code === 'Escape') {
-      elements.modalPageMgr.classList.add('hidden');
-      elements.modalWatermark.classList.add('hidden');
-      elements.modalMerge.classList.add('hidden');
-      if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
-      const textWrapper = document.querySelector('.inline-text-wrapper');
-      if (textWrapper) textWrapper.remove();
+      window.triggerAcrobatShortcut('escape');
     } else if ((key === 'delete' || key === 'backspace' || code === 'Delete' || code === 'Backspace') && state.selectedAnnot) {
-      Object.keys(state.annotations).forEach((p) => {
-        state.annotations[p] = state.annotations[p].filter((a) => a !== state.selectedAnnot);
-      });
-      state.selectedAnnot = null;
-      renderAllPages();
-      updateAnnotationsList();
+      window.triggerAcrobatShortcut('delete');
     }
   }, true);
 }

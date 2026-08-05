@@ -91,9 +91,16 @@
             </button>
             <div id="dropdown-help" class="dropdown-menu">
               <button id="menu-shortcuts" class="dropdown-item"><span>⌨️ Keyboard Shortcuts</span></button>
+              <button id="menu-sponsor" class="dropdown-item text-amber-400"><span>☕ Support & Sponsor Project</span></button>
               <button id="menu-about" class="dropdown-item"><span>ℹ️ About Acrobat Linux</span></button>
             </div>
           </div>
+
+          <!-- Sponsor / Donate Button -->
+          <button id="btn-header-sponsor" class="ml-2 flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-gradient-to-r from-amber-500 via-rose-500 to-red-500 text-white shadow-md hover:brightness-110 active:scale-95 transition cursor-pointer">
+            <span>💖</span>
+            <span class="hidden sm:inline">Support</span>
+          </button>
         </nav>
       </div>
 
@@ -508,6 +515,38 @@
         </div>
         <div class="modal-footer">
           <button class="modal-close-btn action-btn-primary px-4 py-1.5">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sponsor / Donate Modal -->
+    <div id="modal-sponsor" class="modal-overlay hidden">
+      <div class="modal-card max-w-md w-full text-center">
+        <div class="modal-header border-b border-neutral-800 pb-3">
+          <h3 class="text-base font-bold text-white flex items-center justify-center gap-2">
+            <span>💖</span> Support Open Acrobat Development
+          </h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body space-y-4 py-4">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-500 to-red-600 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-red-900/40">
+            ☕
+          </div>
+          <p class="text-xs text-neutral-300 leading-relaxed">
+            Open Acrobat is 100% Free &amp; Open-Source for Linux, Fedora, and PC users worldwide! If this tool saves you time, consider buying a coffee to support future updates.
+          </p>
+
+          <div class="space-y-2 pt-2">
+            <a href="https://github.com/sponsors/Corazonpirate27" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-semibold text-xs rounded-lg transition shadow-md">
+              <span>💖</span> Sponsor on GitHub ($5 / mo)
+            </a>
+            <a href="https://buymeacoffee.com/corazonpirate27" target="_blank" rel="noopener noreferrer" class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs rounded-lg transition shadow-md">
+              <span>☕</span> Buy Me a Coffee ($3.00)
+            </a>
+          </div>
+        </div>
+        <div class="modal-footer justify-center pt-2">
+          <button class="modal-close-btn action-btn-primary px-5 py-1.5">Close</button>
         </div>
       </div>
     </div>
