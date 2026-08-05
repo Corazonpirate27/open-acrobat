@@ -1527,7 +1527,8 @@ function setupEventListeners() {
       elements.modalWatermark.classList.add('hidden');
       elements.modalMerge.classList.add('hidden');
       if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
-      if (elements.modalSponsor) elements.modalSponsor.classList.add('hidden');
+      const mSponsor = document.getElementById('modal-sponsor');
+      if (mSponsor) mSponsor.classList.add('hidden');
     });
   });
 
@@ -1536,16 +1537,24 @@ function setupEventListeners() {
     if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
   });
 
-  // Sponsor / Donate Modal Toggle
-  if (elements.btnHeaderSponsor) {
-    elements.btnHeaderSponsor.addEventListener('click', () => {
-      if (elements.modalSponsor) elements.modalSponsor.classList.remove('hidden');
+  // Sponsor / Donate Modal Toggle (Direct DOM Lookup)
+  const btnSponsor = document.getElementById('btn-header-sponsor');
+  const menuSponsor = document.getElementById('menu-sponsor');
+  const modalSponsor = document.getElementById('modal-sponsor');
+
+  if (btnSponsor) {
+    btnSponsor.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (modalSponsor) modalSponsor.classList.remove('hidden');
     });
   }
 
-  if (elements.menuSponsor) {
-    elements.menuSponsor.addEventListener('click', () => {
-      if (elements.modalSponsor) elements.modalSponsor.classList.remove('hidden');
+  if (menuSponsor) {
+    menuSponsor.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (modalSponsor) modalSponsor.classList.remove('hidden');
     });
   }
 
