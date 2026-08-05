@@ -14,7 +14,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "electron:dev": "electron .",
-    "dist": "vite build && electron-builder --linux AppImage rpm"
+    "dist": "vite build && electron-builder --linux AppImage --dir"
   },
   "build": {
     "appId": "com.corazonpirate27.openacrobat",
