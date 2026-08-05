@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#121216" />
+  <title>Acrobat Linux - Professional PDF Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans antialiased overflow-hidden select-none touch-manipulation">
+  <div id="app" class="flex flex-col h-screen w-screen bg-neutral-950 text-neutral-100 overflow-hidden">
+    
+    <!-- Top Bar Header (Adobe Style) -->
+    <header class="app-header flex items-center justify-between px-3 py-1.5 bg-neutral-900 border-b border-neutral-800 text-sm select-none z-30">
+      <div class="flex items-center gap-3">
+        <!-- Logo -->
+        <div class="flex items-center gap-2 font-bold text-base tracking-tight text-white">
+          <div class="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center text-white shadow-md shadow-red-900/40">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9.5 8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5zm5 5H9.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h5c.28 0 .5.22.5.5s-.22.5-.5.5zm1.5-3H8c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h10c.28 0 .5.22.5.5s-.22.5-.5.5z"/>
+            </svg>
+          </div>
+          <span class="bg-gradient-to-r from-red-500 to-amber-500 bg-clip-text text-transparent font-extrabold">Acrobat</span>
+          <span class="text-xs px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 font-mono font-normal hidden sm:inline">Linux Edition</span>
+        </div>
+
+        <!-- Desktop Menu items -->
+        <nav class="hidden md:flex items-center gap-1 text-xs text-neutral-300 ml-2">
+          <div class="relative group">
+            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">File</button>
+            <div class="dropdown-menu">
+              <button id="menu-open" class="dropdown-item"><span>📂 Open PDF...</span><kbd>Ctrl+O</kbd></button>
+              <button id="menu-open-demo" class="dropdown-item"><span>✨ Load Demo PDF</span></button>
+              <div class="dropdown-divider"></div>
+              <button id="menu-save" class="dropdown-item"><span>💾 Save PDF</span><kbd>Ctrl+S</kbd></button>
+              <button id="menu-export-png" class="dropdown-item"><span>🖼️ Export Pages as PNG...</span></button>
+              <div class="dropdown-divider"></div>
+              <button id="menu-merge" class="dropdown-item"><span>🔀 Merge Multiple PDFs...</span></button>
+              <button id="menu-print" class="dropdown-item"><span>🖨️ Print...</span><kbd>Ctrl+P</kbd></button>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Edit</button>
+            <div class="dropdown-menu">
+              <button id="menu-undo" class="dropdown-item"><span>↩️ Undo</span><kbd>Ctrl+Z</kbd></button>
+              <button id="menu-redo" class="dropdown-item"><span>↪️ Redo</span><kbd>Ctrl+Y</kbd></button>
+              <div class="dropdown-divider"></div>
+              <button id="menu-clear-annots" class="dropdown-item"><span>🗑️ Clear All Annotations</span></button>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">View</button>
+            <div class="dropdown-menu">
+              <button id="menu-zoom-in" class="dropdown-item"><span>🔍 Zoom In</span><kbd>Ctrl++</kbd></button>
+              <button id="menu-zoom-out" class="dropdown-item"><span>🔍 Zoom Out</span><kbd>Ctrl+-</kbd></button>
+              <button id="menu-fit-width" class="dropdown-item"><span>↔️ Fit Width</span></button>
+              <button id="menu-fit-page" class="dropdown-item"><span>↕️ Fit Page</span></button>
+              <div class="dropdown-divider"></div>
+              <button id="menu-rotate-cw" class="dropdown-item"><span>↻ Rotate Clockwise</span></button>
+              <button id="menu-rotate-ccw" class="dropdown-item"><span>↺ Rotate Counter-Clockwise</span></button>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Tools</button>
+            <div class="dropdown-menu">
+              <button id="menu-tool-page-mgr" class="dropdown-item"><span>📑 Organize & Reorder Pages</span></button>
+              <button id="menu-tool-watermark" class="dropdown-item"><span>💧 Add Text Watermark</span></button>
+              <button id="menu-tool-stamp" class="dropdown-item"><span>🖋️ Digital Stamp / Signature</span></button>
+              <button id="menu-tool-img2pdf" class="dropdown-item"><span>🖼️ Image to PDF Converter</span></button>
+            </div>
+          </div>
+
+          <div class="relative group">
+            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Help</button>
+            <div class="dropdown-menu">
+              <button id="menu-shortcuts" class="dropdown-item"><span>⌨️ Keyboard Shortcuts</span></button>
+              <button id="menu-about" class="dropdown-item"><span>ℹ️ About Acrobat Linux</span></button>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Header Center: Document Name -->
+      <div id="doc-title-container" class="hidden sm:flex items-center gap-2 text-xs text-neutral-300 bg-neutral-950/60 px-3 py-1 rounded-full border border-neutral-800 max-w-xs truncate">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="doc-name" class="truncate font-medium">No document opened</span>
+      </div>
+
+      <!-- Header Right: Quick Buttons -->
+      <div class="flex items-center gap-2">
+        <input type="file" id="file-input" accept="application/pdf" class="hidden" />
+        <button id="btn-open-file" class="action-btn-primary min-h-[38px] sm:min-h-[32px]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span class="hidden xs:inline">Open</span>
+        </button>
+        <button id="btn-save-pdf" class="action-btn-accent min-h-[38px] sm:min-h-[32px]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span class="hidden xs:inline">Save</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Toolbar -->
+    <div class="main-toolbar flex items-center justify-between px-3 py-2 bg-neutral-900/90 border-b border-neutral-800 text-neutral-200 z-20 backdrop-blur-md overflow-x-auto scrollbar-none">
+      <!-- Left Tool Selector Group -->
+      <div class="flex items-center gap-1">
+        <button id="tool-hand" class="tool-btn active min-h-[36px] min-w-[36px]" title="Pan / Hand Tool (H)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5a1.5 1.5 0 113 0m-3 0V11m3-5.5a1.5 1.5 0 113 0V11"/></svg>
+        </button>
+        <button id="tool-select" class="tool-btn min-h-[36px] min-w-[36px]" title="Select / Edit Annotations (V)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+        </button>
+        
+        <div class="toolbar-divider"></div>
+
+        <button id="tool-highlight" class="tool-btn min-h-[36px] min-w-[36px]" title="Highlight Text (Shift+H)">
+          <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </button>
+
+        <button id="tool-draw" class="tool-btn min-h-[36px] min-w-[36px]" title="Freehand Pen (P)">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        </button>
+
+        <button id="tool-text" class="tool-btn min-h-[36px] min-w-[36px]" title="Add Text Box (T)">
+          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </button>
+
+        <button id="tool-shape" class="tool-btn min-h-[36px] min-w-[36px]" title="Add Rectangle Shape (R)">
+          <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h18v18H3V3z"/></svg>
+        </button>
+
+        <button id="tool-stamp" class="tool-btn min-h-[36px] min-w-[36px]" title="Add Stamp / Signature (S)">
+          <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <button id="tool-page-mgr" class="tool-btn text-amber-300 min-h-[36px]" title="Organize Pages (Rotate / Reorder / Delete)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+          <span class="text-xs font-semibold hidden md:inline ml-1">Pages</span>
+        </button>
+
+        <button id="tool-merge" class="tool-btn text-indigo-300 min-h-[36px]" title="Merge PDFs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span class="text-xs font-semibold hidden md:inline ml-1">Merge</span>
+        </button>
+      </div>
+
+      <!-- Center: Page Controls -->
+      <div class="flex items-center gap-1.5 text-xs">
+        <button id="btn-prev-page" class="nav-icon-btn min-h-[36px] min-w-[36px]" title="Previous Page (PgUp)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <div class="flex items-center bg-neutral-950 px-2 py-1 rounded border border-neutral-800">
+          <input type="number" id="page-num-input" value="1" min="1" class="w-9 bg-transparent text-center text-white focus:outline-none font-mono text-xs" />
+          <span class="text-neutral-500 px-1">/</span>
+          <span id="page-count" class="text-neutral-400 font-mono">0</span>
+        </div>
+        <button id="btn-next-page" class="nav-icon-btn min-h-[36px] min-w-[36px]" title="Next Page (PgDn)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- Right: Zoom Controls & Sidebar Toggles -->
+      <div class="flex items-center gap-1">
+        <button id="btn-zoom-out" class="nav-icon-btn min-h-[36px] min-w-[36px]" title="Zoom Out (Ctrl++)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+        </button>
+        <span id="zoom-level" class="text-xs font-mono w-12 text-center text-neutral-300">100%</span>
+        <button id="btn-zoom-in" class="nav-icon-btn min-h-[36px] min-w-[36px]" title="Zoom In (Ctrl++)">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </button>
+
+        <div class="toolbar-divider"></div>
+
+        <button id="toggle-left-sidebar" class="tool-btn active min-h-[36px] min-w-[36px]" title="Toggle Sidebar Panel">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16"/></svg>
+        </button>
+        <button id="toggle-inspector" class="tool-btn active min-h-[36px] min-w-[36px]" title="Toggle Tool Inspector">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace Area -->
+    <div class="flex-1 flex overflow-hidden relative">
+      
+      <!-- Left Sidebar Panel -->
+      <aside id="left-sidebar" class="w-64 bg-neutral-900 border-r border-neutral-800 flex flex-col transition-all duration-200 z-20 absolute md:relative inset-y-0 left-0 shadow-2xl md:shadow-none max-w-[85vw]">
+        <!-- Sidebar Tabs -->
+        <div class="flex border-b border-neutral-800 text-xs font-medium">
+          <button id="tab-thumbs" class="sidebar-tab active">
+            <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+            Pages
+          </button>
+          <button id="tab-annots" class="sidebar-tab">
+            <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+            Notes
+          </button>
+          <button id="tab-outline" class="sidebar-tab">
+            <svg class="w-3.5 h-3.5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+            Outline
+          </button>
+        </div>
+
+        <!-- Sidebar Content Body -->
+        <div class="flex-1 overflow-y-auto p-2 scrollbar-thin">
+          <!-- Thumbnails View -->
+          <div id="panel-thumbs" class="space-y-3">
+            <div id="thumbnail-container" class="grid grid-cols-1 gap-3 p-1">
+              <div class="text-center text-xs text-neutral-500 py-10">No pages to display</div>
+            </div>
+          </div>
+
+          <!-- Annotations View -->
+          <div id="panel-annots" class="hidden space-y-2">
+            <div id="annotations-list" class="space-y-2">
+              <div class="text-center text-xs text-neutral-500 py-10">No annotations added yet</div>
+            </div>
+          </div>
+
+          <!-- Outline View -->
+          <div id="panel-outline" class="hidden">
+            <div id="outline-container" class="text-xs text-neutral-400 p-2 space-y-1">
+              <div class="text-center text-xs text-neutral-500 py-10">No document bookmarks</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center PDF Canvas Viewer -->
+      <main id="pdf-container" class="flex-1 bg-neutral-950 overflow-auto relative flex flex-col items-center p-3 sm:p-6 custom-scrollbar focus:outline-none touch-pan-x touch-pan-y pb-20 md:pb-6">
+        
+        <!-- Empty State Drop Zone -->
+        <div id="empty-state" class="my-auto flex flex-col items-center justify-center text-center p-6 sm:p-8 border-2 border-dashed border-neutral-800 rounded-2xl max-w-lg bg-neutral-900/40 backdrop-blur w-full">
+          <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-900/30 text-red-500 flex items-center justify-center mb-4 border border-red-800/50">
+            <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h2 class="text-lg sm:text-xl font-bold text-white mb-2">Welcome to Acrobat Linux</h2>
+          <p class="text-xs sm:text-sm text-neutral-400 mb-6 max-w-xs">Open your PDF file or try our sample document on PC, iPad, or mobile.</p>
+          <div class="flex flex-wrap justify-center gap-3 w-full">
+            <button id="drop-open-btn" class="action-btn-primary px-4 py-2.5 min-h-[44px]">
+              📂 Select PDF File
+            </button>
+            <button id="drop-demo-btn" class="action-btn-accent px-4 py-2.5 min-h-[44px]">
+              ⚡ Load Sample Document
+            </button>
+          </div>
+        </div>
+
+        <!-- Rendered Pages Container -->
+        <div id="pages-wrapper" class="hidden flex flex-col gap-4 sm:gap-6 items-center">
+          <!-- Page containers rendered dynamically -->
+        </div>
+      </main>
+
+      <!-- Right Inspector Panel -->
+      <aside id="right-inspector" class="w-64 bg-neutral-900 border-l border-neutral-800 flex flex-col transition-all duration-200 z-20 absolute md:relative inset-y-0 right-0 shadow-2xl md:shadow-none max-w-[85vw]">
+        <div class="px-3 py-2 border-b border-neutral-800 text-xs font-bold text-neutral-300 flex items-center justify-between">
+          <span>TOOL PROPERTIES</span>
+          <span id="active-tool-badge" class="px-2 py-0.5 rounded bg-red-950 text-red-400 border border-red-800/50 text-[10px]">HAND</span>
+        </div>
+
+        <div class="flex-1 p-3 space-y-4 overflow-y-auto text-xs">
+          <!-- Color Picker -->
+          <div class="space-y-1.5">
+            <label class="text-neutral-400 font-medium">Color</label>
+            <div class="flex items-center gap-2">
+              <input type="color" id="prop-color" value="#ffeb3b" class="w-8 h-8 rounded border border-neutral-700 bg-transparent cursor-pointer" />
+              <div class="flex gap-1.5">
+                <button class="color-preset w-6 h-6 rounded-full bg-yellow-400 border border-neutral-700" data-color="#facc15"></button>
+                <button class="color-preset w-6 h-6 rounded-full bg-emerald-400 border border-neutral-700" data-color="#34d399"></button>
+                <button class="color-preset w-6 h-6 rounded-full bg-blue-400 border border-neutral-700" data-color="#60a5fa"></button>
+                <button class="color-preset w-6 h-6 rounded-full bg-rose-500 border border-neutral-700" data-color="#f43f5e"></button>
+                <button class="color-preset w-6 h-6 rounded-full bg-black border border-neutral-700" data-color="#000000"></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stroke / Font Size -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between">
+              <label class="text-neutral-400 font-medium">Size / Thickness</label>
+              <span id="prop-size-val" class="font-mono text-neutral-300">4px</span>
+            </div>
+            <input type="range" id="prop-size" min="1" max="36" value="4" class="w-full accent-red-600 cursor-pointer min-h-[32px]" />
+          </div>
+
+          <!-- Opacity -->
+          <div class="space-y-1.5">
+            <div class="flex justify-between">
+              <label class="text-neutral-400 font-medium">Opacity</label>
+              <span id="prop-opacity-val" class="font-mono text-neutral-300">50%</span>
+            </div>
+            <input type="range" id="prop-opacity" min="10" max="100" value="50" class="w-full accent-red-600 cursor-pointer min-h-[32px]" />
+          </div>
+
+          <div class="border-t border-neutral-800 pt-3"></div>
+
+          <!-- Quick Stamps Box -->
+          <div class="space-y-2">
+            <label class="text-neutral-400 font-medium block">Preset Stamps</label>
+            <div class="grid grid-cols-2 gap-1.5">
+              <button class="stamp-preset-btn bg-emerald-950/60 text-emerald-400 border-emerald-800 min-h-[36px]" data-stamp="APPROVED">✓ APPROVED</button>
+              <button class="stamp-preset-btn bg-red-950/60 text-red-400 border-red-800 min-h-[36px]" data-stamp="REJECTED">✕ REJECTED</button>
+              <button class="stamp-preset-btn bg-amber-950/60 text-amber-400 border-amber-800 min-h-[36px]" data-stamp="CONFIDENTIAL">🔒 CONFIDENTIAL</button>
+              <button class="stamp-preset-btn bg-blue-950/60 text-blue-400 border-blue-800 min-h-[36px]" data-stamp="DRAFT">📝 DRAFT</button>
+            </div>
+          </div>
+
+          <!-- Signature Canvas Box -->
+          <div class="border-t border-neutral-800 pt-3 space-y-2">
+            <label class="text-neutral-400 font-medium block">Draw Signature</label>
+            <div class="bg-white rounded border border-neutral-700 overflow-hidden">
+              <canvas id="sig-canvas" width="220" height="70" class="cursor-crosshair bg-white w-full touch-none"></canvas>
+            </div>
+            <div class="flex justify-between gap-2">
+              <button id="sig-clear-btn" class="px-3 py-1.5 bg-neutral-800 text-neutral-300 rounded hover:bg-neutral-700 text-xs min-h-[36px]">Clear</button>
+              <button id="sig-apply-btn" class="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-500 font-medium text-xs min-h-[36px]">Use Signature</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Mobile Floating Bottom Dock (iOS / Android Smart Phones) -->
+    <nav id="mobile-bottom-dock" class="md:hidden fixed bottom-3 left-3 right-3 bg-neutral-900/95 border border-neutral-800 backdrop-blur-xl rounded-2xl p-1.5 flex items-center justify-around z-40 shadow-2xl shadow-black/80">
+      <button id="m-tool-hand" class="mobile-dock-btn active" title="Pan Hand Tool">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5a1.5 1.5 0 113 0m-3 0V11m3-5.5a1.5 1.5 0 113 0V11"/></svg>
+        <span class="text-[10px]">Pan</span>
+      </button>
+      <button id="m-tool-select" class="mobile-dock-btn" title="Select / Edit">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+        <span class="text-[10px]">Select</span>
+      </button>
+      <button id="m-tool-text" class="mobile-dock-btn text-blue-400" title="Type Text Anywhere">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span class="text-[10px]">Write</span>
+      </button>
+      <button id="m-tool-highlight" class="mobile-dock-btn text-yellow-400" title="Highlight Text">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        <span class="text-[10px]">Highlight</span>
+      </button>
+      <button id="m-tool-draw" class="mobile-dock-btn text-emerald-400" title="Pen Draw">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        <span class="text-[10px]">Draw</span>
+      </button>
+      <button id="m-tool-stamp" class="mobile-dock-btn text-rose-400" title="Stamp / Sign">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        <span class="text-[10px]">Stamp</span>
+      </button>
+    </nav>
+
+    <!-- Modals -->
+    <!-- Page Manager Modal -->
+    <div id="modal-page-mgr" class="modal-overlay hidden">
+      <div class="modal-card max-w-4xl w-full">
+        <div class="modal-header">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>📑</span> Page Organizer & Management
+          </h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body max-h-[60vh] overflow-y-auto">
+          <p class="text-xs text-neutral-400 mb-3">Reorder pages, rotate, or delete unwanted pages before exporting.</p>
+          <div id="page-mgr-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <!-- Dynamically populated page cards -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-page-mgr-apply" class="action-btn-primary">Apply Page Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Watermark Modal -->
+    <div id="modal-watermark" class="modal-overlay hidden">
+      <div class="modal-card max-w-md w-full">
+        <div class="modal-header">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>💧</span> Add Text Watermark
+          </h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body space-y-3">
+          <div>
+            <label class="text-xs font-medium text-neutral-300 block mb-1">Watermark Text</label>
+            <input type="text" id="wm-text" value="CONFIDENTIAL" class="w-full bg-neutral-950 border border-neutral-700 rounded px-3 py-1.5 text-xs text-white" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="text-xs font-medium text-neutral-300 block mb-1">Font Size</label>
+              <input type="number" id="wm-size" value="48" class="w-full bg-neutral-950 border border-neutral-700 rounded px-3 py-1.5 text-xs text-white" />
+            </div>
+            <div>
+              <label class="text-xs font-medium text-neutral-300 block mb-1">Opacity (%)</label>
+              <input type="number" id="wm-opacity" value="25" min="5" max="100" class="w-full bg-neutral-950 border border-neutral-700 rounded px-3 py-1.5 text-xs text-white" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-apply-watermark" class="action-btn-accent">Apply Watermark</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Merge PDFs Modal -->
+    <div id="modal-merge" class="modal-overlay hidden">
+      <div class="modal-card max-w-lg w-full">
+        <div class="modal-header">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>🔀</span> Merge PDF Files
+          </h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body space-y-3">
+          <p class="text-xs text-neutral-400">Select multiple PDF files to combine into a single document.</p>
+          <input type="file" id="merge-files-input" multiple accept="application/pdf" class="hidden" />
+          <button id="btn-select-merge-files" class="w-full py-3 border-2 border-dashed border-neutral-700 rounded-lg text-xs text-neutral-300 hover:border-red-500 hover:text-white transition flex flex-col items-center gap-1">
+            <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span>Click to add PDF files</span>
+          </button>
+          <ul id="merge-files-list" class="space-y-1 max-h-40 overflow-y-auto text-xs text-neutral-300">
+            <li class="text-neutral-500 text-center py-2">No files selected</li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-run-merge" class="action-btn-accent disabled:opacity-50">Merge PDFs & Open</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
