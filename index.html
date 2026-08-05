@@ -445,6 +445,70 @@
         <div class="modal-footer">
           <button id="btn-run-merge" class="action-btn-accent disabled:opacity-50">Merge PDFs & Open</button>
         </div>
+    <!-- Shortcuts Modal -->
+    <div id="modal-shortcuts" class="modal-overlay hidden">
+      <div class="modal-card max-w-xl w-full">
+        <div class="modal-header">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>⌨️</span> Keyboard Shortcuts & Hotkeys
+          </h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body max-h-[65vh] overflow-y-auto space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Open PDF File</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + O</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Save PDF Document</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + S</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Print Document</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + P</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Zoom In / Zoom Out</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + / -</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Undo Annotation</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + Z</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Redo Annotation</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Ctrl + Y</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Hand Tool (Pan)</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">H</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Select / Drag Tool</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">V</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Write Text Anywhere</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">T</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Pen Drawing Tool</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">P</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Stamp & Signature Tool</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">S</kbd>
+            </div>
+            <div class="p-2.5 rounded-lg bg-neutral-950 border border-neutral-800 flex items-center justify-between">
+              <span class="text-neutral-300">Delete Selected Element</span>
+              <kbd class="px-2 py-0.5 bg-neutral-800 text-neutral-300 rounded font-mono text-[11px] border border-neutral-700">Delete / Backspace</kbd>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="modal-close-btn action-btn-primary px-4 py-1.5">Close</button>
+        </div>
       </div>
     </div>
 

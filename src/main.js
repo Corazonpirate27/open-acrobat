@@ -109,6 +109,8 @@ const elements = {
   mergeFilesList: document.getElementById('merge-files-list'),
   btnRunMerge: document.getElementById('btn-run-merge'),
 
+  modalShortcuts: document.getElementById('modal-shortcuts'),
+
   // Dropzone buttons
   dropOpenBtn: document.getElementById('drop-open-btn'),
   dropDemoBtn: document.getElementById('drop-demo-btn'),
@@ -1521,39 +1523,69 @@ function setupEventListeners() {
       elements.modalPageMgr.classList.add('hidden');
       elements.modalWatermark.classList.add('hidden');
       elements.modalMerge.classList.add('hidden');
+      if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
     });
   });
 
-  // Shortcuts Modal
+  // Shortcuts Modal Toggle
   elements.menuShortcuts.addEventListener('click', () => {
-    alert(`Acrobat Linux Keyboard Shortcuts:
-- Ctrl + O: Open PDF file
-- Ctrl + S: Save PDF
-- Ctrl + / -: Zoom In / Zoom Out
-- H: Hand tool (Pan)
-- V: Select tool (Drag/Move elements)
-- T: Write Text Anywhere (Click & Type)
-- P: Freehand Pen
-- Delete: Remove selected text/element`);
+    if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
   });
 
   elements.menuAbout.addEventListener('click', () => {
-    alert(`Acrobat Linux Edition
+    alert(`Open Acrobat - Linux & Cross-Platform Edition
 Version 1.0.0 (Fedora / iPad / Mobile Ready)
 Built with WebAssembly, PDF.js, and PDF-Lib.`);
   });
 
-  // Keyboard Shortcuts
+  // Global Cross-Platform Keyboard Shortcuts Engine (Fedora / Linux / macOS / Windows / Web)
   window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+    // Ignore hotkeys when user is actively typing in an input field or inline editor
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+      if (e.key === 'Escape') {
+        const textWrapper = document.querySelector('.inline-text-wrapper');
+        if (textWrapper) textWrapper.remove();
+      }
+      return;
+    }
 
-    if (e.ctrlKey && e.key.toLowerCase() === 'o') {
+    const isCmdOrCtrl = e.metaKey || e.ctrlKey;
+
+    if (isCmdOrCtrl && e.key.toLowerCase() === 'o') {
       e.preventDefault();
       elements.fileInput.value = '';
       elements.fileInput.click();
-    } else if (e.ctrlKey && e.key.toLowerCase() === 's') {
+    } else if (isCmdOrCtrl && e.key.toLowerCase() === 's') {
       e.preventDefault();
       savePdfDocument();
+    } else if (isCmdOrCtrl && e.key.toLowerCase() === 'p') {
+      e.preventDefault();
+      window.print();
+    } else if (isCmdOrCtrl && (e.key === '=' || e.key === '+')) {
+      e.preventDefault();
+      state.scale += 0.15;
+      elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+      renderAllPages();
+    } else if (isCmdOrCtrl && e.key === '-') {
+      e.preventDefault();
+      if (state.scale > 0.3) {
+        state.scale -= 0.15;
+        elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+        renderAllPages();
+      }
+    } else if (isCmdOrCtrl && e.key === '0') {
+      e.preventDefault();
+      state.scale = 1.0;
+      elements.zoomLevel.textContent = `100%`;
+      renderAllPages();
+    } else if (isCmdOrCtrl && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      const currAnnots = state.annotations[state.currentPage];
+      if (currAnnots && currAnnots.length > 0) {
+        currAnnots.pop();
+        renderAllPages();
+        updateAnnotationsList();
+      }
     } else if (e.key.toLowerCase() === 'h') {
       setActiveTool('hand');
     } else if (e.key.toLowerCase() === 'v') {
@@ -1562,7 +1594,22 @@ Built with WebAssembly, PDF.js, and PDF-Lib.`);
       setActiveTool('draw');
     } else if (e.key.toLowerCase() === 't') {
       setActiveTool('text');
-    } else if (e.key === 'Delete' && state.selectedAnnot) {
+    } else if (e.key.toLowerCase() === 's') {
+      setActiveTool('stamp');
+    } else if (e.key.toLowerCase() === 'm') {
+      elements.modalMerge.classList.remove('hidden');
+    } else if (e.key.toLowerCase() === 'w') {
+      elements.modalWatermark.classList.remove('hidden');
+    } else if (e.key === '?' || e.key === '/') {
+      if (elements.modalShortcuts) elements.modalShortcuts.classList.remove('hidden');
+    } else if (e.key === 'Escape') {
+      elements.modalPageMgr.classList.add('hidden');
+      elements.modalWatermark.classList.add('hidden');
+      elements.modalMerge.classList.add('hidden');
+      if (elements.modalShortcuts) elements.modalShortcuts.classList.add('hidden');
+      const textWrapper = document.querySelector('.inline-text-wrapper');
+      if (textWrapper) textWrapper.remove();
+    } else if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedAnnot) {
       Object.keys(state.annotations).forEach((p) => {
         state.annotations[p] = state.annotations[p].filter((a) => a !== state.selectedAnnot);
       });
