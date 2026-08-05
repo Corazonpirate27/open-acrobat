@@ -113,9 +113,10 @@ html, body {
   z-index: 50;
   margin-top: 0.25rem;
 }
-.group:hover .dropdown-menu,
-.group.open .dropdown-menu {
+.dropdown-container:hover .dropdown-menu,
+.dropdown-menu.show {
   display: block !important;
+  z-index: 100 !important;
 }
 
 .dropdown-item {

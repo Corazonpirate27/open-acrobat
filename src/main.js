@@ -158,18 +158,25 @@ async function init() {
 
 // Dropdown Menu Toggles for File, Edit, View, Tools, Help
 function setupDropdownMenus() {
-  const groups = document.querySelectorAll('.group');
-  
-  groups.forEach((group) => {
-    const btn = group.querySelector('.menu-btn');
-    if (btn) {
+  const menuPairs = [
+    { btnId: 'btn-menu-file', dropId: 'dropdown-file' },
+    { btnId: 'btn-menu-edit', dropId: 'dropdown-edit' },
+    { btnId: 'btn-menu-view', dropId: 'dropdown-view' },
+    { btnId: 'btn-menu-tools', dropId: 'dropdown-tools' },
+    { btnId: 'btn-menu-help', dropId: 'dropdown-help' },
+  ];
+
+  menuPairs.forEach(({ btnId, dropId }) => {
+    const btn = document.getElementById(btnId);
+    const drop = document.getElementById(dropId);
+    if (btn && drop) {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const isOpen = group.classList.contains('open');
-        // Close all other menus
-        groups.forEach((g) => g.classList.remove('open'));
+        e.preventDefault();
+        const isOpen = drop.classList.contains('show');
+        document.querySelectorAll('.dropdown-menu').forEach((d) => d.classList.remove('show'));
         if (!isOpen) {
-          group.classList.add('open');
+          drop.classList.add('show');
         }
       });
     }
@@ -177,13 +184,13 @@ function setupDropdownMenus() {
 
   // Close menus when clicking anywhere outside
   document.addEventListener('click', () => {
-    groups.forEach((g) => g.classList.remove('open'));
+    document.querySelectorAll('.dropdown-menu').forEach((d) => d.classList.remove('show'));
   });
 
   // Close menu when clicking any dropdown item
   document.querySelectorAll('.dropdown-item').forEach((item) => {
     item.addEventListener('click', () => {
-      groups.forEach((g) => g.classList.remove('open'));
+      document.querySelectorAll('.dropdown-menu').forEach((d) => d.classList.remove('show'));
     });
   });
 }

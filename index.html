@@ -29,11 +29,13 @@
           <span class="text-xs px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 font-mono font-normal hidden sm:inline">Linux Edition</span>
         </div>
 
-        <!-- Desktop Menu items -->
-        <nav class="hidden md:flex items-center gap-1 text-xs text-neutral-300 ml-2">
-          <div class="relative group">
-            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">File</button>
-            <div class="dropdown-menu">
+        <!-- Menu items -->
+        <nav class="flex items-center gap-1 text-xs text-neutral-300 ml-2 z-50">
+          <div class="relative dropdown-container">
+            <button id="btn-menu-file" class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition flex items-center gap-1 font-medium cursor-pointer">
+              File <span class="text-[9px] text-neutral-500">▼</span>
+            </button>
+            <div id="dropdown-file" class="dropdown-menu">
               <button id="menu-open" class="dropdown-item"><span>📂 Open PDF...</span><kbd>Ctrl+O</kbd></button>
               <button id="menu-open-demo" class="dropdown-item"><span>✨ Load Demo PDF</span></button>
               <div class="dropdown-divider"></div>
@@ -45,9 +47,11 @@
             </div>
           </div>
 
-          <div class="relative group">
-            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Edit</button>
-            <div class="dropdown-menu">
+          <div class="relative dropdown-container">
+            <button id="btn-menu-edit" class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition flex items-center gap-1 font-medium cursor-pointer">
+              Edit <span class="text-[9px] text-neutral-500">▼</span>
+            </button>
+            <div id="dropdown-edit" class="dropdown-menu">
               <button id="menu-undo" class="dropdown-item"><span>↩️ Undo</span><kbd>Ctrl+Z</kbd></button>
               <button id="menu-redo" class="dropdown-item"><span>↪️ Redo</span><kbd>Ctrl+Y</kbd></button>
               <div class="dropdown-divider"></div>
@@ -55,9 +59,11 @@
             </div>
           </div>
 
-          <div class="relative group">
-            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">View</button>
-            <div class="dropdown-menu">
+          <div class="relative dropdown-container">
+            <button id="btn-menu-view" class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition flex items-center gap-1 font-medium cursor-pointer">
+              View <span class="text-[9px] text-neutral-500">▼</span>
+            </button>
+            <div id="dropdown-view" class="dropdown-menu">
               <button id="menu-zoom-in" class="dropdown-item"><span>🔍 Zoom In</span><kbd>Ctrl++</kbd></button>
               <button id="menu-zoom-out" class="dropdown-item"><span>🔍 Zoom Out</span><kbd>Ctrl+-</kbd></button>
               <button id="menu-fit-width" class="dropdown-item"><span>↔️ Fit Width</span></button>
@@ -68,19 +74,22 @@
             </div>
           </div>
 
-          <div class="relative group">
-            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Tools</button>
-            <div class="dropdown-menu">
+          <div class="relative dropdown-container">
+            <button id="btn-menu-tools" class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition flex items-center gap-1 font-medium cursor-pointer">
+              Tools <span class="text-[9px] text-neutral-500">▼</span>
+            </button>
+            <div id="dropdown-tools" class="dropdown-menu">
               <button id="menu-tool-page-mgr" class="dropdown-item"><span>📑 Organize & Reorder Pages</span></button>
               <button id="menu-tool-watermark" class="dropdown-item"><span>💧 Add Text Watermark</span></button>
               <button id="menu-tool-stamp" class="dropdown-item"><span>🖋️ Digital Stamp / Signature</span></button>
-              <button id="menu-tool-img2pdf" class="dropdown-item"><span>🖼️ Image to PDF Converter</span></button>
             </div>
           </div>
 
-          <div class="relative group">
-            <button class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition">Help</button>
-            <div class="dropdown-menu">
+          <div class="relative dropdown-container">
+            <button id="btn-menu-help" class="menu-btn hover:bg-neutral-800 px-2.5 py-1 rounded transition flex items-center gap-1 font-medium cursor-pointer">
+              Help <span class="text-[9px] text-neutral-500">▼</span>
+            </button>
+            <div id="dropdown-help" class="dropdown-menu">
               <button id="menu-shortcuts" class="dropdown-item"><span>⌨️ Keyboard Shortcuts</span></button>
               <button id="menu-about" class="dropdown-item"><span>ℹ️ About Acrobat Linux</span></button>
             </div>
