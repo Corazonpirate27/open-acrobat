@@ -22,6 +22,7 @@ const state = {
   selectedAnnot: null,      // Active selected annotation object
   pageRotations: {},        // Map: pageNum -> rotation (0, 90, 180, 270)
   pageOrder: [],            // Array of original 1-based page indices
+  mergeSelectedFiles: [],   // Array of File objects to merge
   
   // Tool properties
   color: '#facc15',
@@ -97,6 +98,9 @@ const elements = {
   btnPageMgrApply: document.getElementById('btn-page-mgr-apply'),
   
   modalWatermark: document.getElementById('modal-watermark'),
+  wmText: document.getElementById('wm-text'),
+  wmSize: document.getElementById('wm-size'),
+  wmOpacity: document.getElementById('wm-opacity'),
   btnApplyWatermark: document.getElementById('btn-apply-watermark'),
   
   modalMerge: document.getElementById('modal-merge'),
@@ -133,6 +137,7 @@ const elements = {
 
 // Initialize Application
 async function init() {
+  setupDropdownMenus();
   setupEventListeners();
   setupDragAndDrop();
   setupSignatureCanvas();
@@ -149,6 +154,38 @@ async function init() {
   setTimeout(() => {
     loadDemoPdf();
   }, 300);
+}
+
+// Dropdown Menu Toggles for File, Edit, View, Tools, Help
+function setupDropdownMenus() {
+  const groups = document.querySelectorAll('.group');
+  
+  groups.forEach((group) => {
+    const btn = group.querySelector('.menu-btn');
+    if (btn) {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = group.classList.contains('open');
+        // Close all other menus
+        groups.forEach((g) => g.classList.remove('open'));
+        if (!isOpen) {
+          group.classList.add('open');
+        }
+      });
+    }
+  });
+
+  // Close menus when clicking anywhere outside
+  document.addEventListener('click', () => {
+    groups.forEach((g) => g.classList.remove('open'));
+  });
+
+  // Close menu when clicking any dropdown item
+  document.querySelectorAll('.dropdown-item').forEach((item) => {
+    item.addEventListener('click', () => {
+      groups.forEach((g) => g.classList.remove('open'));
+    });
+  });
 }
 
 // Load Demo PDF
@@ -1007,6 +1044,21 @@ function setupSignatureCanvas() {
   });
 }
 
+// Export Current Page as PNG Image
+function exportCurrentPageAsPng() {
+  const activePageContainer = elements.pagesWrapper.querySelector(`[data-page-num="${state.currentPage}"]`);
+  if (!activePageContainer) return alert('No active PDF page to export.');
+
+  const canvas = activePageContainer.querySelector('canvas');
+  if (!canvas) return alert('Page canvas not ready.');
+
+  const imageUri = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.download = `${state.fileName.replace(/\.pdf$/i, '')}_Page_${state.currentPage}.png`;
+  link.href = imageUri;
+  link.click();
+}
+
 // Save PDF with Annotations burned into PDF bytes using pdf-lib
 async function savePdfDocument() {
   if (!state.pdfBytes) return;
@@ -1136,8 +1188,95 @@ function openPageManagerModal() {
   elements.modalPageMgr.classList.remove('hidden');
 }
 
+// Setup Watermark Modal
+function setupWatermarkModal() {
+  elements.btnApplyWatermark.addEventListener('click', async () => {
+    const wmTextVal = elements.wmText.value.trim() || 'CONFIDENTIAL';
+    const wmSizeVal = parseInt(elements.wmSize.value) || 48;
+    const wmOpacityVal = (parseInt(elements.wmOpacity.value) || 25) / 100;
+
+    if (!state.pdfBytes) return alert('No PDF opened.');
+
+    try {
+      const pdfDoc = await PDFDocument.load(state.pdfBytes.slice(0), { ignoreEncryption: true });
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const pages = pdfDoc.getPages();
+
+      pages.forEach((page) => {
+        const { width, height } = page.getSize();
+        page.drawText(wmTextVal, {
+          x: width / 4,
+          y: height / 2,
+          size: wmSizeVal,
+          font,
+          color: rgb(0.8, 0.2, 0.2),
+          opacity: wmOpacityVal,
+          rotate: degrees(45),
+        });
+      });
+
+      const modifiedBytes = await pdfDoc.save();
+      elements.modalWatermark.classList.add('hidden');
+      await loadPdfFromBytes(modifiedBytes, `Watermarked_${state.fileName}`);
+    } catch (err) {
+      alert('Watermark error: ' + err.message);
+    }
+  });
+}
+
+// Setup PDF Merge Modal
+function setupMergeModal() {
+  elements.btnSelectMergeFiles.addEventListener('click', () => {
+    elements.mergeFilesInput.value = '';
+    elements.mergeFilesInput.click();
+  });
+
+  elements.mergeFilesInput.addEventListener('change', (e) => {
+    state.mergeSelectedFiles = Array.from(e.target.files);
+    elements.mergeFilesList.innerHTML = '';
+
+    if (state.mergeSelectedFiles.length === 0) {
+      elements.mergeFilesList.innerHTML = '<li class="text-neutral-500 text-center py-2">No files selected</li>';
+      return;
+    }
+
+    state.mergeSelectedFiles.forEach((file, index) => {
+      const li = document.createElement('li');
+      li.className = 'flex items-center justify-between p-2 bg-neutral-900 rounded border border-neutral-800 text-xs';
+      li.innerHTML = `<span class="truncate font-medium text-white">${index + 1}. ${file.name}</span><span class="text-neutral-500 text-[10px]">${(file.size / 1024).toFixed(1)} KB</span>`;
+      elements.mergeFilesList.appendChild(li);
+    });
+  });
+
+  elements.btnRunMerge.addEventListener('click', async () => {
+    if (state.mergeSelectedFiles.length < 2) {
+      return alert('Please select at least 2 PDF files to merge.');
+    }
+
+    try {
+      const mergedPdf = await PDFDocument.create();
+
+      for (const file of state.mergeSelectedFiles) {
+        const bytes = await file.arrayBuffer();
+        const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const copiedPages = await mergedPdf.copyPages(doc, doc.getPageIndices());
+        copiedPages.forEach((page) => mergedPdf.addPage(page));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      elements.modalMerge.classList.add('hidden');
+      await loadPdfFromBytes(mergedBytes, 'Merged_Document.pdf');
+    } catch (err) {
+      alert('Failed to merge PDFs: ' + err.message);
+    }
+  });
+}
+
 // Setup Event Listeners
 function setupEventListeners() {
+  setupWatermarkModal();
+  setupMergeModal();
+
   // File Open Buttons
   elements.btnOpenFile.addEventListener('click', () => {
     elements.fileInput.value = '';
@@ -1164,9 +1303,17 @@ function setupEventListeners() {
   elements.dropDemoBtn.addEventListener('click', loadDemoPdf);
   elements.menuOpenDemo.addEventListener('click', loadDemoPdf);
 
-  // Save PDF
+  // Save & Export
   elements.btnSavePdf.addEventListener('click', savePdfDocument);
   elements.menuSave.addEventListener('click', savePdfDocument);
+  elements.menuExportPng.addEventListener('click', exportCurrentPageAsPng);
+  elements.menuPrint.addEventListener('click', () => window.print());
+
+  // Merge & Watermark Modals
+  elements.menuMerge.addEventListener('click', () => elements.modalMerge.classList.remove('hidden'));
+  elements.toolMerge.addEventListener('click', () => elements.modalMerge.classList.remove('hidden'));
+  elements.menuToolWatermark.addEventListener('click', () => elements.modalWatermark.classList.remove('hidden'));
+  elements.menuToolStamp.addEventListener('click', () => setActiveTool('stamp'));
 
   // Navigation
   elements.btnPrevPage.addEventListener('click', () => {
@@ -1180,17 +1327,71 @@ function setupEventListeners() {
     if (val >= 1 && val <= state.numPages) scrollToPage(val);
   });
 
-  // Zoom
+  // Zoom & View Options
   elements.btnZoomIn.addEventListener('click', () => {
     state.scale += 0.15;
     elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
     renderAllPages();
   });
+  elements.menuZoomIn.addEventListener('click', () => {
+    state.scale += 0.15;
+    elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+    renderAllPages();
+  });
+
   elements.btnZoomOut.addEventListener('click', () => {
     if (state.scale > 0.3) {
       state.scale -= 0.15;
       elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
       renderAllPages();
+    }
+  });
+  elements.menuZoomOut.addEventListener('click', () => {
+    if (state.scale > 0.3) {
+      state.scale -= 0.15;
+      elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+      renderAllPages();
+    }
+  });
+
+  elements.menuFitWidth.addEventListener('click', () => {
+    const containerWidth = elements.pdfContainer.clientWidth - 40;
+    state.scale = Math.min(1.8, Math.max(0.4, containerWidth / 600));
+    elements.zoomLevel.textContent = `${Math.round(state.scale * 100)}%`;
+    renderAllPages();
+  });
+
+  elements.menuFitPage.addEventListener('click', () => {
+    state.scale = 0.9;
+    elements.zoomLevel.textContent = `90%`;
+    renderAllPages();
+  });
+
+  elements.menuRotateCw.addEventListener('click', () => {
+    state.rotation = (state.rotation + 90) % 360;
+    renderAllPages();
+  });
+
+  elements.menuRotateCcw.addEventListener('click', () => {
+    state.rotation = (state.rotation + 270) % 360;
+    renderAllPages();
+  });
+
+  // Edit Menu Options
+  elements.menuUndo.addEventListener('click', () => {
+    const currAnnots = state.annotations[state.currentPage];
+    if (currAnnots && currAnnots.length > 0) {
+      currAnnots.pop();
+      renderAllPages();
+      updateAnnotationsList();
+    }
+  });
+
+  elements.menuClearAnnots.addEventListener('click', () => {
+    if (confirm('Clear all annotations on this document?')) {
+      state.annotations = {};
+      renderAllPages();
+      updateAnnotationsList();
     }
   });
 
@@ -1300,7 +1501,7 @@ function setupEventListeners() {
     });
   });
 
-  // Page Manager Modal
+  // Page Manager Modal Apply
   elements.btnPageMgrApply.addEventListener('click', () => {
     elements.modalPageMgr.classList.add('hidden');
     renderAllPages();
