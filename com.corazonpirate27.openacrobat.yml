@@ -1,0 +1,24 @@
+app-id: com.corazonpirate27.openacrobat
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+command: open-acrobat
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --share=network
+  - --filesystem=host
+  - --device=dri
+modules:
+  - name: open-acrobat
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/bin /app/share/applications /app/share/metainfo
+      - cp -r dist-desktop/linux-unpacked/* /app/bin/
+      - cp acrobat-linux.desktop /app/share/applications/com.corazonpirate27.openacrobat.desktop
+      - cp com.corazonpirate27.openacrobat.metainfo.xml /app/share/metainfo/
+    sources:
+      - type: dir
+        path: .

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.corazonpirate27.openacrobat</id>
+  <name>Open Acrobat</name>
+  <summary>A fast, open-source Adobe Acrobat clone for Fedora, Linux, and cross-platform devices</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <developer_name>Corazonpirate27</developer_name>
+  
+  <description>
+    <p>
+      Open Acrobat is a powerful, lightweight, and professional PDF editor and viewer built natively for Fedora Linux and cross-platform devices.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Multi-page continuous PDF scrolling with thumbnail sidebar</li>
+      <li>Click &amp; type text anywhere on PDF pages with instant save controls</li>
+      <li>Selectable &amp; copyable text layer</li>
+      <li>Text highlighting, vector drawing, sticky notes, and stamps</li>
+      <li>Touch-friendly digital signature drawing pad</li>
+      <li>Page organizer (reorder, rotate, delete pages)</li>
+      <li>PDF merging &amp; custom text watermarking</li>
+      <li>Full keyboard shortcuts support</li>
+    </ul>
+  </description>
+  
+  <launchable type="desktop-id">com.corazonpirate27.openacrobat.desktop</launchable>
+  
+  <url type="homepage">https://github.com/Corazonpirate27/open-acrobat</url>
+  <url type="bugtracker">https://github.com/Corazonpirate27/open-acrobat/issues</url>
+  <url type="vcs-browser">https://github.com/Corazonpirate27/open-acrobat</url>
+  
+  <categories>
+    <category>Office</category>
+    <category>Viewer</category>
+    <category>Publishing</category>
+    <category>Graphics</category>
+  </categories>
+  
+  <releases>
+    <release version="1.0.0" date="2026-08-05">
+      <description>
+        <p>Initial release of Open Acrobat with complete PDF editing, annotations, and cross-platform support.</p>
+      </description>
+    </release>
+  </releases>
+  
+  <content_rating type="oars-1.1" />
+</component>
