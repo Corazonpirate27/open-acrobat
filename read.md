@@ -1,15 +1,16 @@
 <div align="center">
 
-# 📄 Acrobat Linux - Professional PDF Suite
+# 📄 Open Acrobat - Professional PDF Suite
 
-### *A fast, open-source Adobe Acrobat clone for Fedora, Linux, PC, iPad, and Mobile*
+### *A 100% Free & Open-Source Adobe Acrobat Clone for Fedora, Linux, PC, iPad, and Mobile*
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)
 ![Fedora](https://img.shields.io/badge/Fedora-Workstation-blueviolet.svg?style=for-the-badge&logo=fedora)
 ![Linux](https://img.shields.io/badge/Linux-Ubuntu%20%7C%20Arch%20%7C%20Debian-FCC624.svg?style=for-the-badge&logo=linux)
 ![Cross Platform](https://img.shields.io/badge/Platform-PC%20%7C%20iPad%20%7C%20Mobile-success.svg?style=for-the-badge)
+![Open Source](https://img.shields.io/badge/Open%20Source-100%25%20Free-success.svg?style=for-the-badge)
 
-[Features](#-key-features) • [Quickstart](#-quickstart) • [Shortcuts](#-keyboard-shortcuts) • [Fedora Packaging](#-fedora--linux-desktop-packaging) • [Tech Stack](#-tech-stack)
+[Features](#-key-features) • [Quickstart](#-quickstart) • [Shortcuts](#-keyboard-shortcuts) • [Fedora Packaging](#-fedora--linux-desktop-packaging) • [License](#-license)
 
 ---
 
@@ -59,10 +60,10 @@
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/Corazonpirate27/acro-linux.git
+git clone https://github.com/Corazonpirate27/open-acrobat.git
 
 # 2. Enter project folder
-cd pdf-acrobat-clone
+cd open-acrobat
 
 # 3. Install dependencies
 npm install
@@ -79,27 +80,34 @@ Open [`http://localhost:5173`](http://localhost:5173) in your browser.
 
 | Shortcut | Action |
 | :--- | :--- |
-| `Ctrl + O` | Open PDF file |
-| `Ctrl + S` | Save & Export PDF |
+| `Ctrl + O` / `Cmd + O` | Open PDF file |
+| `Ctrl + S` / `Cmd + S` | Save & Export PDF |
+| `Ctrl + P` / `Cmd + P` | Print Document |
 | `Ctrl + / -` | Zoom In / Zoom Out |
+| `Ctrl + Z` | Undo Annotation |
 | `H` | Hand Pan Tool |
 | `V` | Select & Drag Elements |
 | `T` | Write Text Anywhere |
 | `P` | Freehand Pen |
-| `Delete` | Remove Selected Element |
+| `S` | Stamp & Signature Tool |
+| `M` | Merge PDFs Modal |
+| `W` | Watermark Modal |
+| `?` | Keyboard Shortcuts Cheatsheet |
+| `Delete` / `Backspace` | Remove Selected Element |
 
 ---
 
 ## 📦 Fedora & Linux Desktop Packaging
 
-To create a native Linux `.AppImage` or Fedora `.rpm` package:
+To launch or build the native Linux desktop application:
 
 ```bash
-# Install packaging tools
-npm install -D electron electron-builder
+# Run native desktop app
+cd ~/open-acrobat/dist-desktop/linux-unpacked
+./open-acrobat
 
-# Build native Linux packages
-npx electron-builder --linux rpm AppImage
+# Build standalone AppImage & RPM packages
+npm run dist
 ```
 
 ---
@@ -115,4 +123,4 @@ npx electron-builder --linux rpm AppImage
 
 ## 📄 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+**Open Acrobat** is 100% Free & Open-Source Software distributed under the permissive [MIT License](LICENSE).
