@@ -117,3 +117,4 @@ npx electron-builder --linux rpm AppImage
 
 Distributed under the MIT License. See `LICENSE` for more information.
 # open-acrobat
+# open-acrobat
